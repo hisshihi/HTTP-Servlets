@@ -7,13 +7,18 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class HttpServer {
 
+    private final ExecutorService pool;
     private final int PORT;
+    private boolean stopped;
 
-    public HttpServer(int PORT) {
+    public HttpServer(int PORT, int poolSize) {
         this.PORT = PORT;
+        this.pool = Executors.newFixedThreadPool(poolSize);
     }
 
     // При вызове метода run создаём сервер
@@ -21,10 +26,14 @@ public class HttpServer {
         try {
             // Идёт создание сервера и бронирование порта
             ServerSocket serverSocket = new ServerSocket(PORT);
-            // Ждём запрос
-            Socket socket = serverSocket.accept();
-            // Обработка запроса
-            processSocket(socket);
+//            Пока сервер не стопнут, принимаются все запросы
+            while (!stopped) {
+                // Ждём запрос
+                Socket socket = serverSocket.accept();
+                System.out.println("Socket accepted");
+                // Обработка запроса в кол-ве poolSize
+                pool.submit(() -> processSocket(socket));
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -38,6 +47,8 @@ public class HttpServer {
 //            Шаг 1 - обработать request
             System.out.println("Request: " + new String(inputStream.readNBytes(400)));
 
+            Thread.sleep(10000);
+
 //            Шаг 2 - создание response
             byte[] body = Files.readAllBytes(Path.of("resources", "example.html"));
             byte[] headers = """
@@ -48,9 +59,13 @@ public class HttpServer {
             outputStream.write(headers);
             outputStream.write(System.lineSeparator().getBytes());
             outputStream.write(body);
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
 //            TODO: 14.08.2024 - обработать ошибку
             e.printStackTrace();
         }
+    }
+
+    public void setStopped(boolean stopped) {
+        this.stopped = stopped;
     }
 }
