@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collection;
+import java.util.Enumeration;
 
 // Определяем сервлет и привязываем его к URL /first
 @WebServlet("/first")
@@ -31,12 +33,22 @@ public class FirstServlet extends HttpServlet {
     // Переопределяем метод doGet для обработки GET запросов
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Из header получаем данные
+        // Получаем данные о пользователе
+        Enumeration<String> headerNames = req.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String headerName = headerNames.nextElement();
+            System.out.println(headerName);
+        }
+        req.getHeader("user-agent");
         // Устанавливаем тип контента ответа в HTML
-        resp.setContentType("text/html");
+        resp.setContentType("text/html; charset=UTF-8");
+        // Кастомный заголовок
+        resp.setHeader("token", "123");
         // Получаем объект PrintWriter для отправки данных в ответе
         try (PrintWriter writer = resp.getWriter()) {
             // Записываем HTML-код в ответ
-            writer.write("<h1>Hello from First Servlet</h1>");
+            writer.write("<h1>Привет с первого сервлета!</h1>");
         }
     }
 
