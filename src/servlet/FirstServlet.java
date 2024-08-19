@@ -7,11 +7,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Map;
+import java.util.stream.Stream;
 
 // Определяем сервлет и привязываем его к URL /first
 @WebServlet("/first")
@@ -58,9 +60,12 @@ public class FirstServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // Добавил обработку запроса в виде ключей и значений
-        Map<String, String[]> reqParameterMap = req.getParameterMap();
-        System.out.println(reqParameterMap);
+        // Обработка текстового тела запроса
+        try (BufferedReader reader = req.getReader();
+             Stream<String> lines = reader.lines()) {
+            // Чтение тела запроса в формате текста
+            lines.forEach(System.out::println);
+        }
     }
 
     // Метод destroy вызывается один раз при завершении работы сервлета. Обычно используется для освобождения ресурсов.
