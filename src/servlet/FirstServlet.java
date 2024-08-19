@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.Map;
 
 // Определяем сервлет и привязываем его к URL /first
 @WebServlet("/first")
@@ -33,13 +34,16 @@ public class FirstServlet extends HttpServlet {
     // Переопределяем метод doGet для обработки GET запросов
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Получение параметров запроса
+        String param = req.getParameter("param");
+        Map<String, String[]> paramMap = req.getParameterMap();
         // Из header получаем данные
         // Получаем данные о пользователе
-        Enumeration<String> headerNames = req.getHeaderNames();
-        while (headerNames.hasMoreElements()) {
-            String headerName = headerNames.nextElement();
-            System.out.println(headerName);
-        }
+//        Enumeration<String> headerNames = req.getHeaderNames();
+//        while (headerNames.hasMoreElements()) {
+//            String headerName = headerNames.nextElement();
+//            System.out.println(headerName);
+//        }
         req.getHeader("user-agent");
         // Устанавливаем тип контента ответа в HTML
         resp.setContentType("text/html; charset=UTF-8");
@@ -50,6 +54,13 @@ public class FirstServlet extends HttpServlet {
             // Записываем HTML-код в ответ
             writer.write("<h1>Привет с первого сервлета!</h1>");
         }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Добавил обработку запроса в виде ключей и значений
+        Map<String, String[]> reqParameterMap = req.getParameterMap();
+        System.out.println(reqParameterMap);
     }
 
     // Метод destroy вызывается один раз при завершении работы сервлета. Обычно используется для освобождения ресурсов.
