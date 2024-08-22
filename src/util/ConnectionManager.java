@@ -1,5 +1,8 @@
 package util;
 
+import lombok.SneakyThrows;
+import lombok.experimental.UtilityClass;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -9,6 +12,7 @@ import java.sql.SQLException;
  * Использует паттерн Singleton, чтобы гарантировать,
  * что существует только один экземпляр этого класса.
  */
+@UtilityClass
 public final class ConnectionManager {
 
     // Ключи для доступа к свойствам подключения к базе данных
@@ -28,26 +32,18 @@ public final class ConnectionManager {
         }
     }
 
-    // Приватный конструктор, чтобы предотвратить создание экземпляров класса извне
-    private ConnectionManager() {
-    }
-
     /**
      * Возвращает соединение с базой данных.
      *
      * @return Соединение с базой данных.
      */
+    @SneakyThrows
     public static Connection getConnection() {
-        try {
             // Получение значений свойств подключения из класса PropertiesUtil
             return DriverManager.getConnection(
                     PropertiesUtil.get(URL_KEY),
                     PropertiesUtil.get(USER_KEY),
                     PropertiesUtil.get(PASSWORD_KEY)
             );
-        } catch (SQLException e) {
-            // Обработка исключений SQLException
-            throw new RuntimeException(e);
-        }
     }
 }

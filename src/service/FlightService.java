@@ -30,14 +30,14 @@ public class FlightService {
         // Получение списка всех рейсов из DAO
         return flightDao.findAll().stream()
                 // Преобразование каждого объекта FlightEntity в FlightDto
-                .map(flightEntity -> new FlightDto(
-                        flightEntity.getId(),
-                        """
-                        %s - %s - %s
-                        """.formatted(flightEntity.getDepartureDateCode(), flightEntity.getArrivalDateCode(), flightEntity.getStatus())
-                ))
-                // Сбор результатов в список
-                .collect(toList());
+                .map(flightEntity -> FlightDto.builder()
+                        .id(flightEntity.getId())
+                        .description(
+                                """
+                                 %s - %s - %s
+                                 """.formatted(flightEntity.getDepartureDateCode(), flightEntity.getArrivalDateCode(), flightEntity.getStatus()))
+                        .build()
+                ).collect(toList());
     }
 
     /**
