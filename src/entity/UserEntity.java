@@ -15,6 +15,8 @@ public class UserEntity {
 
     private Long id;
     private String name;
+    // Путь до файла
+    private String image;
     private LocalDate birthday;
     private String email;
     private String password;

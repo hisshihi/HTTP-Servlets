@@ -17,7 +17,7 @@ public class UserDao implements Dao<Long, UserEntity> {
 
     private static final UserDao INSTANCE = new UserDao();
 
-    private static final String SAVE_SQL = "INSERT INTO users (name, birthday, email, password, role, gender) VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String SAVE_SQL = "INSERT INTO users (name, birthday, email, password, role, gender, image) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
     @Override
     public List<UserEntity> findAll() {
@@ -53,6 +53,7 @@ public class UserDao implements Dao<Long, UserEntity> {
             preparedStatement.setObject(4, entity.getPassword());
             preparedStatement.setObject(5, entity.getRole().name());
             preparedStatement.setObject(6, entity.getGender().name());
+            preparedStatement.setObject(7, entity.getImage());
 
             // Выполняем запрос
             preparedStatement.executeUpdate();

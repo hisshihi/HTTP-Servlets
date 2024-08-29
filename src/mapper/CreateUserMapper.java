@@ -8,12 +8,14 @@ import util.LocalDateFormatter;
 
 public class CreateUserMapper implements Mapper<CreateUserDto, UserEntity> {
 
+    private static final String IMAGE_FOLDER = "users/";
     private static final CreateUserMapper INSTANCE = new CreateUserMapper();
 
     @Override
     public UserEntity mapFrom(CreateUserDto object) {
         return UserEntity.builder()
                 .name(object.getName())
+                .image(IMAGE_FOLDER + object.getImage().getSubmittedFileName())
                 .birthday(LocalDateFormatter.format(object.getBirthday()))
                 .email(object.getEmail())
                 .password(object.getPassword())
